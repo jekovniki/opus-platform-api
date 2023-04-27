@@ -1,0 +1,40 @@
+{
+  "name": "opus-platform-api",
+  "version": "1.0.0",
+  "description": "<h1 style=\"text-align:center\">Opus Platform API</h1> <p>This repository holds a NodeJS application for the Opus Platform API</p> <p>To run this app you will need to have Docker installed on your machine (Docker and docker-compose, but if you are running the desktop version of Docker, you are going to have it(docker-compose) by default)</p> <h2>Production</h2> <p>If you want to start this application in production mode, follow these steps:</p> <ol>     <li>Clone the repository in folder by choice with `git clone git@github.com:jekovniki/opus-platform-api.git`</li>     <li>`cd api`</li>     <li>Copy `.env.default` and paste it in the same place, just rename it to `.env`</li>     <li>* If necessary change ports, if not you can keep the default ports</li>     <li>Execute `docker-compose up`</li> </ol> <p>After that the services should be available on the ports in your .env file</p>",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./build/index.js",
+    "start:dev": "nodemon ./src/index.ts",
+    "build": "tsc -p .",
+    "clean": "rm -rf build",
+    "test": "jest tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/helmet": "^4.0.0",
+    "@types/ioredis": "^5.0.0",
+    "@types/jest": "^29.5.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.7.0",
+    "helmet": "^6.1.5",
+    "ioredis": "^5.3.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "winston": "^3.8.2",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22"
+  }
+}
