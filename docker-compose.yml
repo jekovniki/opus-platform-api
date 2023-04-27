@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  cache:
+    image: redis:latest
+    volumes:
+      - cache:/data
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+  # api:
+  #   build: .
+  #   ports:
+  #     - ${REST_PORT}:${REST_PORT}
+
+volumes:
+  database:
+  cache:
+  # api:
