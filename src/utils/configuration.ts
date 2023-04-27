@@ -17,4 +17,9 @@ export const SERVER = {
 
 export const DATABASE = require(validateEnvironmentVariable(process.env.DATABASE_KEY_PATH));
 
+export const CACHE = {
+    HOST: validateEnvironmentVariable(process.env.REDIS_HOST),
+    PORT: Number(validateEnvironmentVariable(process.env.REDIS_PORT))
+}
+
 export const ENVIRONMENT = validateEnvironmentVariable(process.env.ENVIRONMENT);
