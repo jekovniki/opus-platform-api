@@ -1,0 +1,1 @@
+export const SUCCESS_REGISTRATION = 'Thanks for registering into our platform'
