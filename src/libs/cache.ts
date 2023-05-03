@@ -1,8 +1,9 @@
 import { Redis, RedisKey} from "ioredis";
 import { CACHE } from "../utils/configuration";
 import { logger } from "./logger";
+import { ICacheService } from "../interfaces/libs/cache";
 
-class Cache {
+class Cache implements ICacheService {
     protected client: Redis;
     protected port: number;
     protected host: string;
