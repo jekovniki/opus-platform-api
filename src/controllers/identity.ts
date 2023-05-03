@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import * as identity from '../services/identity';
-import { SERVER } from "../utils/constants/status-codes";
+import * as Identity from '../services/identity';
+import { SERVER, SUCCESS } from "../utils/constants/status-codes";
 import { setEmployeeCookie } from "../services/identity/session";
+import { SET_APPLICATION_PATH } from "../utils/configuration";
 
 export async function register(request: Request, response: Response) {
     try {
-        const result = await identity.internalMethods.register(request.body);
+        const result = await Identity.internalMethods.register(request.body);
 
-        response.send(result);
+        response.status(SUCCESS.CREATED.CODE).send(result);
     } catch (error) {
         response.status(SERVER.ERROR.CODE).send({
             success: false,
@@ -18,7 +19,7 @@ export async function register(request: Request, response: Response) {
 
 export function redirectToGoogle(_request: Request, response: Response): void {
     try {
-        const result = identity.google.redirectToGoogleAuthentication();
+        const result = Identity.google.redirectToGoogleAuthentication();
 
         response.redirect(result);
 
@@ -32,12 +33,12 @@ export function redirectToGoogle(_request: Request, response: Response): void {
 
 export async function loginWithGoogle(request: Request, response: Response): Promise<void> {
     try {
-        const result = await identity.google.loginWithGoogle(request);
+        const result = await Identity.google.loginWithGoogle(request);
 
         if ('id' in result) {
             setEmployeeCookie(response, result.id);
 
-            response.redirect(`http://localhost:3001/private?company=${result.company}&job=${result.job}&id=${result.id}`);
+            response.redirect(`${SET_APPLICATION_PATH()}/private?company=${result.companyUic}&job=${result.job}&id=${result.id}`);
             return;
         }
 
@@ -53,7 +54,7 @@ export async function loginWithGoogle(request: Request, response: Response): Pro
 
 export async function redirectToMicrosoft(_request: Request, response: Response): Promise<void> {
     try {
-        const result = await identity.microsoft.redirectToMicrosoftAuthentication();
+        const result = await Identity.microsoft.redirectToMicrosoftAuthentication();
 
         response.redirect(result);
 
@@ -67,12 +68,12 @@ export async function redirectToMicrosoft(_request: Request, response: Response)
 
 export async function loginWithMicrosoft(request: Request, response: Response): Promise<void> {
     try {
-        const result = await identity.microsoft.loginWithMicrosoft(request) as any;
+        const result = await Identity.microsoft.loginWithMicrosoft(request) as any;
 
         if ('id' in result) {
             setEmployeeCookie(response, result.id);
 
-            response.redirect(`http://localhost:3001/private?company=${result.company}&job=${result.job}&id=${result.id}`);
+            response.redirect(`${SET_APPLICATION_PATH()}/private?company=${result.company}&job=${result.job}&id=${result.id}`);
             return;
         }
 
@@ -88,16 +89,15 @@ export async function loginWithMicrosoft(request: Request, response: Response): 
 
 export async function loginInternal(request: Request, response: Response): Promise<void> {
     try {
-        const result = await identity.internalMethods.login(request.body);
+        const result = await Identity.internalMethods.login(request.body);
         if ('id' in result) {
             setEmployeeCookie(response, result.id);
 
-            response.redirect(`http://localhost:3001/private?company=${result.company}&job=${result.job}`);
+            response.redirect(`${SET_APPLICATION_PATH()}/private?company=${result.companyUic}&job=${result.job}&id=${result.id}`);
             return;
         }
 
         response.send(result);
-
 
     } catch (error) {
         response.status(SERVER.ERROR.CODE).send({

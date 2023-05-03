@@ -4,11 +4,16 @@ import { SERVER } from "./constants/status-codes"
 
 export function handleErrors(error:unknown): IBaseResponse {
     if (error instanceof Error) {
-        logger.error(error)
-
+        logger.error(error);
         return {
             success: false,
             message: error.message
+        }
+    }
+    if (typeof error === 'string') {
+        return {
+            success: false,
+            message: error
         }
     }
 

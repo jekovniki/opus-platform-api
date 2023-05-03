@@ -63,3 +63,11 @@ export function addHoursToCurrentTime(hour: number): number {
 
     return new Date(currentTime + hour * 60 * 60 * 1000).getTime();
 }
+
+export function isValueInObject(object: Record<string, any>, value: string): boolean {
+    if (Object.values(object).indexOf(value) > -1) {
+        return true;
+    }
+
+    return false;
+}
