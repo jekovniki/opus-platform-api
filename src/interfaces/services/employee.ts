@@ -7,7 +7,7 @@ export interface IEmployeeData {
     familyName: string;
     picture: string | undefined,
     job: string | undefined,
-    companyUic: string | undefined,
+    companyUic: string | null,
     status: string,
     createdAt: number,
     lastLogin: number

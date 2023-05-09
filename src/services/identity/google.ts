@@ -34,7 +34,7 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
           familyName: data?.family_name,
           picture: data?.picture,
           job: data?.job || null,
-          companyUic: undefined,
+          companyUic: null,
           status: USER_STATUS.PENDING,
           createdAt: Date.now(),
           lastLogin: Date.now()
@@ -59,6 +59,7 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
 
       return getEmployeeByEmail(data?.email);
     } catch (error) {
+      console.log(error);
         return handleErrors(error)
     }
 }
