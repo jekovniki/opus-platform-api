@@ -1,6 +1,6 @@
 import { PublicClientApplication, Configuration } from '@azure/msal-node';
 import { handleErrors } from '../../utils/errors';
-import { IDENTITY } from '../../utils/configuration';
+import { IDENTITY, PATH, SET_APPLICATION_PATH } from '../../utils/configuration';
 
 const config: Configuration = {
     auth: {
@@ -23,7 +23,7 @@ const pca = new PublicClientApplication(config);
 export async function redirectToMicrosoftAuthentication(): Promise<string> {
     return pca.getAuthCodeUrl({
         scopes: ['openid', 'profile', 'email'],
-        redirectUri: 'http://localhost:3001/api/v1/auth/microsoft/callback'
+        redirectUri: `${SET_APPLICATION_PATH()}${PATH.API.v1.auth}/microsoft/callback`
     });
 }
 
@@ -32,7 +32,7 @@ export async function loginWithMicrosoft(request: Record<string, any>){
         const tokenRequest = {
             code: request?.query?.code,
             scopes: ['openid', 'profile', 'email'],
-            redirectUri: 'http://localhost:3001/api/v1/auth/microsoft/callback'
+            redirectUri: `${SET_APPLICATION_PATH()}${PATH.API.v1.auth}/microsoft/callback`
         }
 
         const response = await pca.acquireTokenByCode(tokenRequest);

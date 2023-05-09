@@ -1,12 +1,13 @@
 import { OAuth2Client } from "google-auth-library";
-import { IDENTITY } from "../../utils/configuration";
+import { IDENTITY, PATH, SET_APPLICATION_PATH } from "../../utils/configuration";
 import { handleErrors } from "../../utils/errors";
 import { Request } from "express";
-import { addEmployee, checkIfEmployeeExistsByID, getEmployeeByEmail, setEmployeeLastLogin } from "../../dal/employee";
+import { addEmployee, checkIfEmployeeExistsById, getEmployeeByEmail, setEmployeeLastLogin } from "../../dal/employee";
 import { IBaseResponse } from "../../interfaces/base";
 import { IEmployeeData } from "../../interfaces/services/employee";
+import { USER_STATUS } from "../../utils/constants/user";
 
-const client = new OAuth2Client(IDENTITY.GOOGLE.ID, IDENTITY.GOOGLE.SECRET, 'http://localhost:3001/api/v1/auth/google/callback');
+const client = new OAuth2Client(IDENTITY.GOOGLE.ID, IDENTITY.GOOGLE.SECRET, `${SET_APPLICATION_PATH()}${PATH.API.v1.auth}/google/callback`);
 
 export function redirectToGoogleAuthentication(): string {
     return client.generateAuthUrl({
@@ -23,7 +24,7 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
         url: 'https://www.googleapis.com/oauth2/v1/userinfo',
       }) as Record<string, any>;
 
-      const employeeExists = await checkIfEmployeeExistsByID(data?.id);
+      const employeeExists = await checkIfEmployeeExistsById(data?.id);
       if (employeeExists === false) {
         await addEmployee({
           id: data.id,
@@ -33,7 +34,8 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
           familyName: data?.family_name,
           picture: data?.picture,
           job: data?.job || null,
-          company: data?.company || null,
+          companyUic: undefined,
+          status: USER_STATUS.PENDING,
           createdAt: Date.now(),
           lastLogin: Date.now()
         });
@@ -46,7 +48,8 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
           familyName: data?.family_name,
           picture: data?.picture,
           job: data?.job || null,
-          company: data?.company || null,
+          status: USER_STATUS.PENDING,
+          companyUic: data?.company || null,
           createdAt: Date.now(),
           lastLogin: Date.now()
         }

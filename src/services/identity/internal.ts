@@ -6,7 +6,7 @@ import { SUCCESS_REGISTRATION } from "../../utils/constants/success";
 import { USER_BEHAVIOR_ERRORS } from "../../utils/constants/user";
 import { handleErrors } from "../../utils/errors";
 import { comparePasswords } from "../../utils/helpers";
-import { Employee } from "../employee";
+import { Employee } from "../class/employee";
 
 
 export async function register(user: TRegistrationSchema): Promise<IBaseResponse> {
@@ -52,7 +52,8 @@ export async function login(user: TLoginSchema): Promise<IEmployeeData | IBaseRe
             familyName: employee.familyName,
             picture: employee.picture,
             job: employee.job,
-            company: employee.company,
+            status: employee.status,
+            companyUic: employee.companyUic,
             createdAt: employee.createdAt,
             lastLogin: Date.now()
           }

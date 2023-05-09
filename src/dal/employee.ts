@@ -4,13 +4,13 @@ import { USER_BEHAVIOR_ERRORS } from "../utils/constants/user";
 
 const employeeCollection = "employee"
 
-export async function addEmployee(data: IEmployeeData) {
+export async function addEmployee(data: IEmployeeData): Promise<FirebaseFirestore.WriteResult> {
     const query = database.query();
     
     return query.collection(employeeCollection).doc(data.email).set(data);
 }
 
-export async function checkIfEmployeeExistsByID(id: string): Promise<boolean> {
+export async function checkIfEmployeeExistsById(id: string): Promise<boolean> {
     const query = database.query();
     const response = query.collection(employeeCollection).where("id", "==", id);
 
@@ -54,9 +54,35 @@ export async function getEmployeeByEmail(email: string): Promise<IEmployeeData> 
     return result as any;
 }
 
-export async function setEmployeeLastLogin(email: string) {
+export async function setEmployeeLastLogin(email: string): Promise<FirebaseFirestore.WriteResult> {
     const query = database.query();
     const response = query.collection(employeeCollection).doc(email);
 
     return response.update({ lastLogin: Date.now() });
+}
+
+export async function setEmployeeCompany(employeeEmail: string, companyUic: string): Promise<FirebaseFirestore.WriteResult> {
+    const query = database.query();
+    const response = query.collection(employeeCollection).doc(employeeEmail);
+
+    return response.update({
+        company: companyUic
+    });
+}
+
+export async function setEmployeeCompanyAndStatus(employeeEmail: string, companyUic: string, status: string): Promise<FirebaseFirestore.WriteResult> {
+    const query = database.query();
+    const response = query.collection(employeeCollection).doc(employeeEmail);
+
+    return response.update({
+        companyUic,
+        status
+    });
+}
+
+export async function setEmployeeStatus(employeeEmail: string, status: string): Promise<FirebaseFirestore.WriteResult> {
+    const query = database.query();
+    const response = query.collection(employeeCollection).doc(employeeEmail);
+
+    return response.update({status});
 }

@@ -9,7 +9,7 @@ export const registrationSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     job: z.string(),
-    company: z.string(),
+    companyUic: z.string(),
     picture: z.string()
 });
 

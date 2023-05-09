@@ -24,3 +24,5 @@
     <li>Execute `docker-compose up`</li>
     <li>Run `npm run start:dev`</li>
 </ol>
+<h2 style="text-align:center">API Documentation</h2>
+<p>The API Documentation is generated via Postman. Use the json file inside of your Postman in order to visualize all of the API calls. </p>
