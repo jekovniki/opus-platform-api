@@ -8,4 +8,13 @@ export const mutualFundSchema = z.object({
     name: z.string(),
 });
 
+export const assignInstrumentToFundSchema = z.object({
+    fundId: z.string(),
+    instruments: z.array(z.object({
+        code: z.string(),
+        amount: z.number()
+    }))
+})
+
 export type TMutualFund = z.infer<typeof mutualFundSchema>;
+export type  TFundInstruments = z.infer<typeof assignInstrumentToFundSchema>

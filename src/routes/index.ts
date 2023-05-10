@@ -11,8 +11,10 @@ import { addManagementCompany, getManagementCompany } from "../controllers/compa
 import { setEmployeeStatus } from "../controllers/employee";
 import { SUCCESS } from "../utils/constants/status-codes";
 import { employeeStatusSchema } from "../types/employee";
-import { mutualFundSchema } from "../types/funds";
-import { addMutualFund, getMutualFund } from "../controllers/funds";
+import { assignInstrumentToFundSchema, mutualFundSchema } from "../types/funds";
+import { addInstrumentsToMutualFund, addMutualFund, getMutualFund } from "../controllers/funds";
+import { addMarketInstrumentData, getMarketInstruments } from "../controllers/instruments";
+import { newInstrumentSchema } from "../types/instruments";
 
 export function setRoutes(server: Express): void {
     try {
@@ -26,6 +28,7 @@ export function setRoutes(server: Express): void {
 
         setIdentityRoutes(server);
         setPrivateRoutes(server);
+        setInstrumentRoutes(server);
 
     } catch (error) {
         logger.error(error);
@@ -60,8 +63,18 @@ export function setPrivateRoutes(server: Express):void {
 
         server.post(`${PATH.API.v1.name}/mutual-fund`, loggingMiddleware, validationMiddleware(mutualFundSchema), addMutualFund);
         server.get(`${PATH.API.v1.name}/mutual-fund`, loggingMiddleware, getMutualFund);
+        server.post(`${PATH.API.v1.name}/mutual-fund/instrument`, loggingMiddleware, validationMiddleware(assignInstrumentToFundSchema),  addInstrumentsToMutualFund);
 
         server.put(`${PATH.API.v1.name}/employee/status`, loggingMiddleware, accessControlMiddleware, validationMiddleware(employeeStatusSchema), setEmployeeStatus);
+    } catch (error) {
+        logger.error(error);
+    }
+}
+
+export function setInstrumentRoutes(server: Express):void {
+    try {
+        server.get(`${PATH.API.v1.name}/instruments`, loggingMiddleware, getMarketInstruments);
+        server.post(`${PATH.API.v1.name}/instruments`, loggingMiddleware, validationMiddleware(newInstrumentSchema), addMarketInstrumentData);
     } catch (error) {
         logger.error(error);
     }

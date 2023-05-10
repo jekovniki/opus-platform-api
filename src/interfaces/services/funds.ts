@@ -7,3 +7,18 @@ export interface IMutualFundData {
     type: string,
     createdAt: number
 }
+
+export interface IFundInstrumentInput {
+    code: string,
+    amount: number
+}
+
+export interface IFundInstrumentWithAmount extends IFundInstrumentInput {
+    numberOfSecuritiesIssued: string
+}
+
+export interface IFundInstrumentFailedValidation {
+    success: boolean;
+    missingInstruments: string[],
+    insufficientAmount: IFundInstrumentWithAmount[]
+}

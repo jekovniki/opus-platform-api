@@ -16,7 +16,8 @@ export function handleErrors(error:unknown): IBaseResponse {
             message: error
         }
     }
-
+    console.log(error);
+    console.log('tuka mai');
     return {
         success: false,
         message: SERVER.ERROR.MESSAGE

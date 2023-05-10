@@ -1,6 +1,6 @@
-import { checkIfFundExistsByUic } from "../dal/funds";
+import { checkIfFundExistsByUic, setFundInstruments } from "../dal/funds";
 import { IBaseResponse } from "../interfaces/base";
-import { TMutualFund } from "../types/funds";
+import { TFundInstruments, TMutualFund } from "../types/funds";
 import { USER_BEHAVIOR_ERRORS } from "../utils/constants/user";
 import { handleErrors } from "../utils/errors";
 import { generateUUIDv4 } from "../utils/helpers";
@@ -8,7 +8,8 @@ import * as DAL from '../dal/funds';
 import { SUCCESS_FUND_REGISTRATION } from "../utils/constants/success";
 import { checkIfCompanyExistsById } from "../dal/companies";
 import { checkIfEmployeeExistsById } from "../dal/employee";
-import { IMutualFundData } from "../interfaces/services/funds";
+import { IFundInstrumentFailedValidation, IFundInstrumentInput, IMutualFundData } from "../interfaces/services/funds";
+import { getMarketInstruments } from "./instruments";
 
 
 export async function addMutualFund(data: TMutualFund): Promise<IBaseResponse> {
@@ -45,7 +46,7 @@ export async function addMutualFund(data: TMutualFund): Promise<IBaseResponse> {
 
 export async function getMutualFundById(id: string): Promise<IBaseResponse | IMutualFundData> {
     try {
-        return await DAL.getMutualFundById(id);
+        return DAL.getMutualFundById(id);
     } catch (error) {
         return handleErrors(error);
     }
@@ -53,8 +54,61 @@ export async function getMutualFundById(id: string): Promise<IBaseResponse | IMu
 
 export async function getAllMutualFundsPerCompany(companyId: string): Promise<IBaseResponse | IMutualFundData[]> {
     try {
-        return await DAL.getMutualFundByCompanyId(companyId);
+        return DAL.getMutualFundByCompanyId(companyId);
     } catch (error) {
         return handleErrors(error);
     }
+}
+
+export async function addInstrumentsToMutualFund(data: TFundInstruments): Promise<IBaseResponse | IFundInstrumentFailedValidation> {
+    try {
+        const fund = await validateFundAndInstruments(data.fundId, data.instruments);
+        if ('fundUic' in fund) {
+            await DAL.setFundInstruments(fund.fundUic, data.instruments);
+
+            return {
+                success: true,
+                message: 'Successfully added instruments to fund'
+            }
+        }
+
+        return fund;
+
+    } catch (error) {
+        return handleErrors(error);
+    }
+}
+
+async function validateFundAndInstruments(fundId: string, instruments:IFundInstrumentInput[]): Promise<{ success: boolean, fundUic: string} | IFundInstrumentFailedValidation> {
+    const fund = await DAL.getMutualFundById(fundId);
+
+    const missingInstruments = [];
+    const insufficientAmount = [];
+
+    for (const instrument of instruments) {
+        const instrumentFromDatabase = await getMarketInstruments(instrument.code);
+        if ('success' in instrumentFromDatabase) {
+            missingInstruments.push(instrument.code);
+            continue;
+        }
+        if (!Array.isArray(instrumentFromDatabase) && instrument.amount > Number(instrumentFromDatabase.numberOfSecuritiesIssued)) {
+            insufficientAmount.push({
+                ...instrument,
+                numberOfSecuritiesIssued: instrumentFromDatabase.numberOfSecuritiesIssued
+            });
+        }
+    }
+
+    if (missingInstruments.length || insufficientAmount.length) {
+        return {
+            success: false,
+            missingInstruments,
+            insufficientAmount
+        }
+    }
+
+    return {
+        success: true,
+        fundUic: fund.uic
+    };
 }

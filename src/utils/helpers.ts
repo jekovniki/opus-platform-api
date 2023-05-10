@@ -71,3 +71,7 @@ export function isValueInObject(object: Record<string, any>, value: string): boo
 
     return false;
 }
+
+export function isObjectEmpty(object: Record<string, any>) {
+    return Object.keys(object).length === 0;
+}

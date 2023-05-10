@@ -1,4 +1,4 @@
-import { IMutualFundData } from "../interfaces/services/funds";
+import { IFundInstrumentInput, IMutualFundData } from "../interfaces/services/funds";
 import { database } from "../libs/database";
 import { ERRORS } from "../utils/constants/status-codes";
 
@@ -47,4 +47,10 @@ export async function getMutualFundByCompanyId(managementCompanyId: string): Pro
     })
 
     return result;
+}
+
+export async function setFundInstruments(fundUic: string, instrumentCodes: IFundInstrumentInput[]) {
+    const query = database.query();
+
+    return query.collection(fundsCollection).doc(fundUic).update({ instruments: instrumentCodes });
 }

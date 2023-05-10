@@ -38,7 +38,7 @@ export async function addManagementCompany(companyDetails:TManagementCompany): P
 
 export async function getManagementCompanyById(id: string) {
     try {
-        return await DAL.getCompanyById(id);
+        return DAL.getCompanyById(id);
     } catch(error) {
         return handleErrors(error);
     }
