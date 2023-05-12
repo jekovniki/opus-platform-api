@@ -11,6 +11,7 @@ export const USER_BEHAVIOR_ERRORS = {
     COMPANY_EXISTS: 'Company has been registered already. Please either contact us or login with your address',
     ADMIN_NOT_EXISTS: 'Admin does not exists. Please create a user first and then create a company',
     FUND_EXISTS: 'Mutual fund has been registered already. Please either contact us or use appropriate fund',
+    FUND_NOT_EXISTS: 'Mutual fund does not exists.',
     INVALID_STATUS: 'Invalid status',
     COMPANY_NOT_EXISTS: 'Management company does not exists',
     USER_NOT_EXISTS: 'Employee does not exists'

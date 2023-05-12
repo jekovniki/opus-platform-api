@@ -1,11 +1,12 @@
 import { logger } from "./libs/logger";
 import { server } from "./libs/server";
+import { dailyDownloadLatestMarketInstruments } from "./services/bse";
 import { UNCAUGHT_EXCEPTION_ERROR, UNHANDLED_REJECTION_ERROR } from "./utils/constants/errors";
 
 (async function() {
     try {
         server.start();
-
+        await dailyDownloadLatestMarketInstruments();
     } catch (error) {
         logger.error(error);
     }

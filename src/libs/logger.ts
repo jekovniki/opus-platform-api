@@ -51,6 +51,7 @@ class Logger implements ILogger {
     }
 
     public error(error: unknown): void {
+        console.error(error);
         this.loggerService.error(error);
     }
 }

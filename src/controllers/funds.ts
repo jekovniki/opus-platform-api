@@ -55,3 +55,17 @@ export async function getMutualFund(request: Request, response: Response): Promi
         })
     }
 }
+
+export async function addInstrumentsToMutualFund(request: Request, response: Response) {
+    try {
+        const result = await Funds.addInstrumentsToMutualFund(request.body);
+
+        response.status(SUCCESS.OK.CODE).send(result);
+
+    } catch(error) {
+        response.status(SERVER.ERROR.CODE).send({
+            success: false,
+            message: SERVER.ERROR.MESSAGE
+        })
+    }
+}

@@ -64,3 +64,18 @@ export function SET_APPLICATION_PATH() {
     
     return `https://${CLIENT_APP.HOST}:${CLIENT_APP.PORT}`
 }
+
+export const LISTED_INSTRUMENT_TYPES = {
+    PREMIUM: 'Premium_Equities_Segment',
+    STANDARD: 'Standard_Equities_Segment',
+    SPECIAL_PURPOSE_VEHICLES: 'Special_Purpose_Vehicles_Segment',
+    BONDS: 'Bonds_Segment',
+    COMPENSATORY_INSTRUMENTS: 'Compensatory_Instruments_Segment',
+    EXCHANGE_TRADED_PRODUCTS: 'Exchange_Traded_Products_Segment',
+    SUBSCRIPTION_RIGHTS: 'Subscription_Rights_Segment',
+    PRIVATISATION: 'Privatisation_Segment',
+    INITIAL_PUBLIC_OFFERING: 'Initial_Public_Offering_Segment',
+    GOVERNMENT_SECURITIES: 'Government_Securities_Segment'
+}
+
+export const MARKET_INSTRUMENTS_CACHE_KEY = 'market-instruments';
