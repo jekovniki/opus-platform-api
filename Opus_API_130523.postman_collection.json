@@ -258,6 +258,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Add Instrument to Fund",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fundId\": \"\",\n    \"instruments\": [{\n        \"code\": \"A4L\",\n        \"amount\": 10\n    }, {\n        \"code\": \"AGH\",\n        \"amount\": 30\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/v1/mutual-fund/instrument",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"mutual-fund",
+								"instrument"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -281,6 +312,89 @@
 								"v1",
 								"employee",
 								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Instruments",
+			"item": [
+				{
+					"name": "ALL | Market Instruments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/instruments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"instruments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CODE | Market Instruments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/instruments?type=A4L",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"instruments"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "A4L"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Market Instruments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"A4L\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/v1/instruments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"instruments"
 							]
 						}
 					},
