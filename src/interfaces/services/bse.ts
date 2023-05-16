@@ -18,5 +18,7 @@ export interface IFullMarketInstrumentData{
     average: string,
     change: string,
     tradingPhase: string,
-    lastUpdate: number
+    lastUpdate: number,
+    sector: string,
+    subSector: string
 }

@@ -15,6 +15,7 @@ import { assignInstrumentToFundSchema, mutualFundSchema } from "../types/funds";
 import { addInstrumentsToMutualFund, addMutualFund, getMutualFund } from "../controllers/funds";
 import { addMarketInstrumentData, getMarketInstruments } from "../controllers/instruments";
 import { newInstrumentSchema } from "../types/instruments";
+import { getAllObligations } from "../controllers/obligations";
 
 export function setRoutes(server: Express): void {
     try {
@@ -27,6 +28,7 @@ export function setRoutes(server: Express): void {
         server.post(`${PATH.API.v1.name}/register`, loggingMiddleware, validationMiddleware(registrationSchema), register);
 
         setIdentityRoutes(server);
+        setObligationRoutes(server);
         setPrivateRoutes(server);
         setInstrumentRoutes(server);
 
@@ -69,6 +71,10 @@ export function setPrivateRoutes(server: Express):void {
     } catch (error) {
         logger.error(error);
     }
+}
+
+export function setObligationRoutes(server: Express):void {
+    server.get(`${PATH.API.v1.name}/obligation`, loggingMiddleware, getAllObligations);
 }
 
 export function setInstrumentRoutes(server: Express):void {

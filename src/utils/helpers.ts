@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { v4 } from 'uuid'; 
 import { ENVIRONMENT_VARIABLE } from "./constants/errors";
 import { USER, USER_BEHAVIOR_ERRORS } from "./constants/user";
+import { HOLIDAYS_IN_BULGARIA_2023 } from './constants/user';
 
 export function validateEnvironmentVariable(variable: string | undefined): string {
     if (typeof variable === 'undefined') {
@@ -72,6 +73,41 @@ export function isValueInObject(object: Record<string, any>, value: string): boo
     return false;
 }
 
-export function isObjectEmpty(object: Record<string, any>) {
+export function isObjectEmpty(object: Record<string, any>): boolean {
     return Object.keys(object).length === 0;
+}
+
+export function countEndDateByBusinessDays(startDate: string | number, businessDays: number, holidays: Array<number[]> = HOLIDAYS_IN_BULGARIA_2023): string {
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    let currentDate = new Date(startDate);
+    let count = 0;
+
+    while (count <= businessDays) {
+        currentDate = new Date(currentDate.getTime() + millisecondsPerDay); // Move to the next day
+
+        // Check if the current day is a business day (Monday to Friday) and not a holiday
+        const dayOfWeek = currentDate.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+        const isHoliday = holidays.some(([month, day]) => currentDate.getMonth() === month && currentDate.getDate() === day);
+
+        if (!isWeekend && !isHoliday) {
+        count++; // Increment the counter for business days
+        }
+    }
+
+    return currentDate.toISOString().slice(0, 10);
+}
+
+export function calculatePercentage(number: number, totalAmount: number): number {
+
+  return (number/totalAmount)*100;
+}
+
+export function separateArrayByProperties(array: Array<Record<string, any>>, property: string) {
+    return array.reduce((memo, x) => {
+        if (!memo[x[property]]) { memo[x[property]] = []}
+        memo[x[property]].push(x);
+
+        return memo;
+    }, {});
 }

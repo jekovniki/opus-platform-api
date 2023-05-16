@@ -11,13 +11,13 @@ export function handleErrors(error:unknown): IBaseResponse {
         }
     }
     if (typeof error === 'string') {
+        logger.error(error);
         return {
             success: false,
             message: error
         }
     }
-    console.log(error);
-    console.log('tuka mai');
+    logger.error(error);
     return {
         success: false,
         message: SERVER.ERROR.MESSAGE
