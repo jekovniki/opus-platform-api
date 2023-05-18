@@ -18,6 +18,20 @@ export async function checkIfFundExistsByUic(uic: string): Promise<boolean> {
     });
 }
 
+export async function checkIfFundExistsById(id: string): Promise<boolean> {
+    const query = database.query();
+    const response = query.collection(fundsCollection).where("id", "==", id);
+
+    return response.get().then((snapshot: any) => {
+        if (snapshot.empty) {
+            return false;
+        }
+        
+        return true;
+        
+    });
+}
+
 export async function addMutualFund(data: IMutualFundData): Promise<FirebaseFirestore.WriteResult> {
     const query = database.query();
     

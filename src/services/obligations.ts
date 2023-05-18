@@ -1,12 +1,16 @@
-import { getMutualFundById } from "../dal/funds";
-import { addFundObligation, getFundObligations } from "../dal/obligations";
+import { checkIfFundExistsById, getMutualFundById } from "../dal/funds";
+import { addFundObligation, getFundObligations, getObligationByType, setObligationStatus as DALSetObligationStatus } from "../dal/obligations";
 import { IBaseResponse } from "../interfaces/base";
 import { IMutualFundData } from "../interfaces/services/funds";
 import { IObligationViolation } from "../interfaces/services/obligations";
 import { logger } from "../libs/logger";
+import { TManualObligation, TObligationStatus } from "../types/obligations";
 import { FUND_INVESTMENT_RULES_BG, OBLIGATION_STATUS, OBLIGATION_TYPES } from "../utils/constants/obligations";
+import { ERRORS } from "../utils/constants/status-codes";
+import { SUCCESS_OBLIGATION_SET, SUCCESS_OBLIGATION_UPDATE } from "../utils/constants/success";
 import { USER_BEHAVIOR_ERRORS } from "../utils/constants/user";
 import { handleErrors } from "../utils/errors";
+import { isValueInObject } from "../utils/helpers";
 import { calculatePercentage, countEndDateByBusinessDays, generateUUIDv4, isObjectEmpty, separateArrayByProperties } from "../utils/helpers";
 import { getSectorSharesForInstrument, getTotalSharesForInstrument } from "./instruments";
 
@@ -16,7 +20,8 @@ export async function getAllObligations(employeeId: string, managementCompanyId:
         const allObligations = {
             employee: {},
             managementCompany: {},
-            allFunds: {}
+            allFunds: {},
+            other: {}
         }
 
         allObligations.employee = await getEmployeeObligations(employeeId);
@@ -26,10 +31,58 @@ export async function getAllObligations(employeeId: string, managementCompanyId:
         if (fundIds) {
             allObligations.allFunds = await getAllFundObligations(fundIds);
         }
+        allObligations.other = await getPendingObligations(OBLIGATION_TYPES.MANUAL);
 
         return allObligations;
     } catch (error) {
         return handleErrors(error);
+    }
+}
+
+export async function addManualObligation(data: TManualObligation): Promise<IBaseResponse> {
+    try {
+        const isValidType = isValueInObject(OBLIGATION_TYPES, data.type);
+        const isValidStatus = isValueInObject(OBLIGATION_STATUS, data.status);
+        if (isValidType === false || isValidStatus === false) {
+            throw ERRORS.BAD_REQUEST.MESSAGE;
+        }
+        const isFundExists = await checkIfFundExistsById(data.fundId);
+        if (isFundExists === false) {
+            throw ERRORS.BAD_REQUEST.MESSAGE;
+        }
+
+        await addFundObligation( generateUUIDv4(), data);
+
+        return {
+            success: true,
+            message: SUCCESS_OBLIGATION_SET
+        }
+    } catch (error) {
+        return handleErrors(error);
+    }
+}
+
+export async function setObligationStatus(data: TObligationStatus): Promise<IBaseResponse> {
+    try {
+        const isValidStatus = isValueInObject(OBLIGATION_STATUS, data.status);
+        if (isValidStatus === false) {
+            return {
+                success: false,
+                message: ERRORS.BAD_REQUEST.MESSAGE
+            }
+        }
+        
+        await DALSetObligationStatus(data.id, data.status);
+
+        return {
+            success: true,
+            message: SUCCESS_OBLIGATION_UPDATE
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: ERRORS.BAD_REQUEST.MESSAGE
+        }
     }
 }
 
@@ -206,6 +259,17 @@ async function checkSectorInvestmentPercentage(MAX_SECTOR_INVESTMENT_PERCENTAGE:
     return fundInstrumentsViolated;
 
 }
+
+async function getPendingObligations(type: string): Promise<IObligationViolation[]> {
+    const isValidType = isValueInObject(OBLIGATION_TYPES, type);
+    if (isValidType === false) {
+        throw ERRORS.BAD_REQUEST.MESSAGE;
+    }
+
+    const obligations = await getObligationByType(type);
+
+    return obligations.filter(obligation =>  obligation.status === OBLIGATION_STATUS.PENDING);
+} 
 
 function isViolationRecorded(allObligations: IObligationViolation[]): boolean {
     if (!allObligations.length) {
