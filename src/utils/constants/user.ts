@@ -14,7 +14,8 @@ export const USER_BEHAVIOR_ERRORS = {
     FUND_NOT_EXISTS: 'Mutual fund does not exists.',
     INVALID_STATUS: 'Invalid status',
     COMPANY_NOT_EXISTS: 'Management company does not exists',
-    USER_NOT_EXISTS: 'Employee does not exists'
+    USER_NOT_EXISTS: 'Employee does not exists',
+    INVALID_FUND_TYPE: 'Invalid fund type'
 }
 
 export const USER = {
@@ -29,3 +30,18 @@ export const USER_STATUS = {
     PENDING: 'pending',
     DENIED: 'denied'
 }
+
+export const HOLIDAYS_IN_BULGARIA_2023 = [
+    [0, 2],
+    [2, 3],
+    [3, 14],
+    [3, 17],
+    [4, 1],
+    [4, 8],
+    [4, 24],
+    [8, 6],
+    [8, 22],
+    [11, 25],
+    [11, 26],
+    [11, 27]
+]

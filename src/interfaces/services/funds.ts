@@ -6,6 +6,7 @@ export interface IMutualFundData {
     employeeId: string,
     type: string,
     createdAt: number
+    instruments?: IFundInstrumentInput[]
 }
 
 export interface IFundInstrumentInput {

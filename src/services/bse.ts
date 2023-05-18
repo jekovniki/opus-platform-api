@@ -6,6 +6,7 @@ import { addMarketInstruments } from "../dal/instruments";
 import { logger } from "../libs/logger";
 import { MARKET_INSTRUMENTS_CACHE_KEY } from "../utils/configuration";
 import { cache } from "../libs/cache";
+import { isObjectEmpty } from "../utils/helpers";
 
 export async function dailyDownloadLatestMarketInstruments(): Promise<void> {
     try {
@@ -21,7 +22,7 @@ export async function dailyDownloadLatestMarketInstruments(): Promise<void> {
         }
 
         setTimeout(async () => { await downloadLatestMarketInstruments() }, delay);
-
+        // await downloadLatestMarketInstruments();
     } catch (error) {
         handleErrors(error);
     }
@@ -103,6 +104,7 @@ async function downloadLatestMarketInstruments(): Promise<void> {
 
         logger.info('Successfully downloaded latest market instruments from BSE');
     } catch (error) {
+        console.log(error);
         logger.error('Could not download latest market instruments from BSE');
         handleErrors(error);
     } finally {
@@ -115,32 +117,51 @@ export async function getMarketInstrumentByCodeDaily(code: string, driver: any):
         try {
             await driver.get(`https://www.bse-sofia.bg/en/issuer-profile/${code}`);
             const marketInformationProperties = ['code', 'isin', 'securityType', 'numberOfSecuritiesIssued', 'nominalValue', 'tradingCurrency', 'firstTradingDate', 'market', 'marketMaker'];
-            const lastTradingSessionProperties = ['code', 'volume', 'previousClose', 'last', 'high', 'low', 'average', 'change', 'tradingPhase']
-            const marketInformation = await getInstrumentInformationByTableId('#table_profil_market_info', driver, marketInformationProperties) as any;
-            const lastTradingSessionResults = await getInstrumentInformationByTableId('#table_profil_market_session_results', driver, lastTradingSessionProperties) as any;
+            const lastTradingSessionProperties = ['code', 'volume', 'previousClose', 'last', 'high', 'low', 'average', 'change', 'tradingPhase'];
+            const marketSectorProperties = ['sector', 'subSector'];
 
-            return {
+            const marketInformation = await getInstrumentInformationByTableId('#table_profil_market_info', driver, marketInformationProperties, code);
+            const lastTradingSessionResults = await getInstrumentInformationByTableId('#table_profil_market_session_results', driver, lastTradingSessionProperties, code);
+            const marketSectorInformation = await getInstrumentInformationByTableId('#table_profil_issue_profile', driver, marketSectorProperties, code, false);
+            const fullInstrumentData = {
                 ...marketInformation,
                 ...lastTradingSessionResults,
-                lastUpdate: Date.now()
             }
+            if (isObjectEmpty(marketSectorInformation) === false) {
+                fullInstrumentData.sector = marketSectorInformation.sector,
+                fullInstrumentData.subSector = marketSectorInformation.subSector
+            }
+            return {
+                ...fullInstrumentData,
+                lastUpdate: Date.now()
+            } as any
         } catch (error) {
             throw handleErrors(error);
         }
 }
 
-async function getInstrumentInformationByTableId(id: string, driver: any, objectProperties: string[]): Promise<Record<string, any>> {
-    await driver.wait(until.elementLocated(By.css(`${id} tbody tr`)), 10000);
-
-    const tableRows = await driver.findElements(By.css(`${id} tbody tr`));
-
+async function getInstrumentInformationByTableId(id: string, driver: any, objectProperties: string[], code: string = '', isRequired: boolean = true): Promise<Record<string, any>> {
     const result: any = new Map();
+    
+    try {
+        await driver.wait(until.elementLocated(By.css(`${id} tbody tr`)), 10000);
 
-    for (const row in tableRows) {
-        const cells = await tableRows[row].findElements(By.css("td"));
-        result.set(objectProperties[Number(row)], await cells[1].getText())
+        const tableRows = await driver.findElements(By.css(`${id} tbody tr`), 10000);
+    
+        for (const row in tableRows) {
+            const cells = await tableRows[row].findElements(By.css("td"));
+            result.set(objectProperties[Number(row)], await cells[1].getText())
+        }
+    
+        return Object.fromEntries(result);
+    } catch (error) {
+        if (isRequired) {
+            logger.error(`Could not fetch Market data for instrument: ${code}. Most likely the table is not available in BSE. Instrument isRequired: ${isRequired}`);
+            throw error;
+        }
+        logger.warn(`Could not fetch Market data for instrument: ${code}. Most likely the table is not available in BSE. Instrument isRequired: ${isRequired}`);
+
     }
-
     return Object.fromEntries(result);
 }
 
@@ -148,7 +169,6 @@ async function getInstrumentCodeByTableId(id: string, driver: any): Promise<stri
     await driver.wait(until.elementLocated(By.css(`${id} tbody tr`)), 10000);
 
     const tableRows = await driver.findElements(By.css(`${id} tbody tr`));
-
     const rowData: string[] = [];
     for (const row of tableRows) {
         const cells = await row.findElements(By.css("td"));
