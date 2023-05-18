@@ -266,7 +266,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fundId\": \"\",\n    \"instruments\": [{\n        \"code\": \"A4L\",\n        \"amount\": 10\n    }, {\n        \"code\": \"AGH\",\n        \"amount\": 30\n    }]\n}",
+							"raw": "{\n    \"fundId\": \"eda49026-59c7-4b6b-87bd-2a0af51689fb\",\n    \"instruments\": [{\n        \"code\": \"A4L\",\n        \"amount\": 10\n    }, {\n        \"code\": \"AGH\",\n        \"amount\": 30\n    }, {\n        \"code\": \"0DC1\",\n        \"amount\": 90\n    }]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -377,7 +377,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"A4L\"\n}",
+							"raw": "{\n    \"code\": \"0DC1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -397,6 +397,19 @@
 								"instruments"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Obligations",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
