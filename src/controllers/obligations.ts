@@ -28,3 +28,35 @@ export async function getAllObligations(request: Request, response: Response): P
         })
     }
 }
+
+export async function addManualObligation(request: Request, response: Response): Promise<void> {
+    try {
+        const result = await Obligations.addManualObligation(request.body);
+        if ('success' in result && result.success === false) {
+            throw result.message;
+        }
+
+        response.status(SUCCESS.CREATED.CODE).send(result);
+    } catch (error) {
+        response.status(SERVER.ERROR.CODE).send({
+            success: false,
+            message: SERVER.ERROR.MESSAGE
+        });
+    }
+}
+
+export async function setObligationStatus(request: Request, response: Response): Promise<void> {
+    try {
+        const result = await Obligations.setObligationStatus(request.body);
+        if ('success' in result && result.success === false) {
+            throw result.message;
+        }
+
+        response.status(SUCCESS.CREATED.CODE).send(result);
+    } catch (error) {
+        response.status(SERVER.ERROR.CODE).send({
+            success: false,
+            message: SERVER.ERROR.MESSAGE
+        });
+    }
+}
