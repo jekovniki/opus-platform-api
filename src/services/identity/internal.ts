@@ -1,9 +1,10 @@
 import { addEmployee, checkIfEmployeeExistsByEmail, getEmployeeByEmail, setEmployeeLastLogin } from "../../dal/employee";
 import { IBaseResponse } from "../../interfaces/base";
 import { IEmployeeData } from "../../interfaces/services/employee";
+import { crm } from "../../libs/crm";
 import { TLoginSchema, TRegistrationSchema } from "../../types/identity";
 import { SUCCESS_REGISTRATION } from "../../utils/constants/success";
-import { USER_BEHAVIOR_ERRORS } from "../../utils/constants/user";
+import { REGISTRATION_TYPE, USER_BEHAVIOR_ERRORS } from "../../utils/constants/user";
 import { handleErrors } from "../../utils/errors";
 import { comparePasswords } from "../../utils/helpers";
 import { Employee } from "../class/employee";
@@ -19,8 +20,21 @@ export async function register(user: TRegistrationSchema): Promise<IBaseResponse
             }
         }
         const employee = new Employee(user);
+        const fullEmployeeData = employee.generate();
 
-        await addEmployee(employee.generate());
+        await addEmployee(fullEmployeeData);
+
+        crm.people.set(fullEmployeeData.id, {
+            $name: fullEmployeeData.email,
+            created: (new Date()).toISOString(),
+            registrationType: REGISTRATION_TYPE.INTERNAL,
+            companyUic: fullEmployeeData.companyUic,
+            name: fullEmployeeData.givenName + fullEmployeeData.familyName,
+            status: fullEmployeeData.status,
+            job: fullEmployeeData.job,
+            agreedTerms: fullEmployeeData.agreedTerms,
+            verifiedEmail: fullEmployeeData.verifiedEmail
+        });
         
         return {
             success: true,

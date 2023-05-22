@@ -39,6 +39,18 @@ export async function loginWithMicrosoft(request: Record<string, any>){
 
         console.log(response.account);
 
+        // crm.people.set(fullEmployeeData.id, {
+        //     $name: fullEmployeeData.email,
+        //     created: (new Date()).toISOString(),
+        //     registrationType: REGISTRATION_TYPE.MICROSOFT,
+        //     companyUic: fullEmployeeData.companyUic,
+        //     name: fullEmployeeData.givenName + fullEmployeeData.familyName,
+        //     status: fullEmployeeData.status,
+        //     job: fullEmployeeData.job,
+        //     agreedTerms: fullEmployeeData.agreedTerms,
+        //     verifiedEmail: fullEmployeeData.verifiedEmail
+        // });
+
         return response.account;
 
     } catch (error) {
