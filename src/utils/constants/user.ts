@@ -45,3 +45,9 @@ export const HOLIDAYS_IN_BULGARIA_2023 = [
     [11, 26],
     [11, 27]
 ]
+
+export const REGISTRATION_TYPE = {
+    INTERNAL: 'internal',
+    GOOGLE: 'google',
+    MICROSOFT: 'microsoft'
+}

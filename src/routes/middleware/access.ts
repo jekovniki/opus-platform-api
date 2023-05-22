@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ERRORS } from '../../utils/constants/status-codes';
 import IdentityToken from '../../libs/token';
+import { crmMiddleware } from './crm';
 
 
 export const accessControlMiddleware = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
@@ -10,12 +11,13 @@ export const accessControlMiddleware = async (request: Request, response: Respon
         if ('message' in data) {
             throw ERRORS.UNAUTHORIZED.MESSAGE;
         }
-        if (request.method !== 'GET' && request.body.id !== data.id) {
-            throw ERRORS.UNAUTHORIZED.MESSAGE;
-        }
-        if (request.method === 'GET' && !request.query.id) {
-            throw ERRORS.UNAUTHORIZED.MESSAGE;
-        }
+        await crmMiddleware(data.id, request.method + request.path, JSON.stringify(request.query), request.body);
+        // if (request.method !== 'GET' && request.body.id !== data.id) {
+        //     throw ERRORS.UNAUTHORIZED.MESSAGE;
+        // }
+        // if (request.method === 'GET' && !request.query.id) {
+        //     throw ERRORS.UNAUTHORIZED.MESSAGE;
+        // }
 
         next();
     } catch (error) {
