@@ -5,7 +5,7 @@ import { SUCCESS_REGISTRATION_COMPANY, SUCCESS_USER_UPDATE } from "../utils/cons
 import * as DAL from "../dal/employee";
 import { IBaseResponse } from "../interfaces/base";
 import { TEmployeeStatus } from "../types/employee";
-import { crm } from "../libs/crm";
+import { crm, updateCRMPerson } from "../libs/crm";
 
 export async function setEmployeeCompanyAndStatus(data: { email: string, companyUic: string, status: string }): Promise<IBaseResponse> {
     try {
@@ -16,12 +16,12 @@ export async function setEmployeeCompanyAndStatus(data: { email: string, company
         await DAL.setEmployeeCompanyAndStatus(data.email, data.companyUic, data.status);
 
          // TODO: Optimize this
-        const employeeData =await DAL.getEmployeeByEmail(data.email);
+        const employeeData = await DAL.getEmployeeByEmail(data.email);
 
-        crm.people.set(employeeData.id, {
+        updateCRMPerson(employeeData.id, {
             companyUic: employeeData.companyUic,
             status: employeeData.status
-        });
+        })
 
         return {
             success: true,
@@ -43,9 +43,9 @@ export async function setEmployeeStatus(data: TEmployeeStatus): Promise<IBaseRes
         // TODO: Optimize this
         const employeeData =await DAL.getEmployeeByEmail(data.email);
 
-        crm.people.set(employeeData.id, {
+        updateCRMPerson(employeeData.id, {
             status: employeeData.status
-        });
+        })
 
         return {
             success: true,

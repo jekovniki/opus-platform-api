@@ -6,7 +6,7 @@ import { addEmployee, checkIfEmployeeExistsById, getEmployeeByEmail, setEmployee
 import { IBaseResponse } from "../../interfaces/base";
 import { IEmployeeData } from "../../interfaces/services/employee";
 import { REGISTRATION_TYPE, USER_STATUS } from "../../utils/constants/user";
-import { crm } from "../../libs/crm";
+import { addCRMPerson } from "../../libs/crm";
 
 const client = new OAuth2Client(IDENTITY.GOOGLE.ID, IDENTITY.GOOGLE.SECRET, `${SET_APPLICATION_PATH()}${PATH.API.v1.auth}/google/callback`);
 
@@ -40,18 +40,7 @@ export async function loginWithGoogle(request: Request): Promise<IEmployeeData |
           createdAt: Date.now(),
           lastLogin: Date.now()
         });
-
-        crm.people.set(data.id, {
-          $name: data.email,
-          created: (new Date()).toISOString(),
-          registrationType: REGISTRATION_TYPE.GOOGLE,
-          companyUic: data.companyUic,
-          name: data.givenName + data.familyName,
-          job: data.job,
-          status: USER_STATUS.PENDING,
-          agreedTerms: true,
-          verifiedEmail: true
-      });
+        addCRMPerson(data, REGISTRATION_TYPE.GOOGLE)
 
         return {
           id: data.id,
