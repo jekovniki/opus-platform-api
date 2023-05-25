@@ -17,6 +17,7 @@ import { addMarketInstrumentData, getMarketInstruments } from "../controllers/in
 import { newInstrumentSchema } from "../types/instruments";
 import { addManualObligation, getAllObligations, setObligationStatus } from "../controllers/obligations";
 import { manualObligationSchema, obligationStatusSchema } from "../types/obligations";
+import { getEntityShares } from "../controllers/shares";
 
 export function setRoutes(server: Express): void {
     try {
@@ -69,6 +70,8 @@ export function setPrivateRoutes(server: Express):void {
         server.post(`${PATH.API.v1.name}/mutual-fund/instrument`, loggingMiddleware, validationMiddleware(assignInstrumentToFundSchema),  addInstrumentsToMutualFund);
 
         server.put(`${PATH.API.v1.name}/employee/status`, loggingMiddleware, accessControlMiddleware, validationMiddleware(employeeStatusSchema), setEmployeeStatus);
+
+        server.get(`${PATH.API.v1.name}/shares`, loggingMiddleware, getEntityShares);
     } catch (error) {
         logger.error(error);
     }

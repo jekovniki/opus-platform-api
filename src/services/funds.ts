@@ -9,7 +9,7 @@ import { SUCCESS_FUND_REGISTRATION } from "../utils/constants/success";
 import { checkIfCompanyExistsById } from "../dal/companies";
 import { checkIfEmployeeExistsById } from "../dal/employee";
 import { IFundInstrumentFailedValidation, IFundInstrumentInput, IMutualFundData } from "../interfaces/services/funds";
-import { getMarketInstruments } from "./instruments";
+import { getFullDataForCompanyInstruments, getMarketInstruments } from "./instruments";
 
 
 export async function addMutualFund(data: TMutualFund): Promise<IBaseResponse> {
@@ -74,6 +74,16 @@ export async function addInstrumentsToMutualFund(data: TFundInstruments): Promis
 
         return fund;
 
+    } catch (error) {
+        return handleErrors(error);
+    }
+}
+
+export async function getMutualFundSharesById(id: string) {
+    try {
+        const { instruments } = await DAL.getMutualFundById(id);
+
+        return instruments ? getFullDataForCompanyInstruments(instruments) : {};
     } catch (error) {
         return handleErrors(error);
     }

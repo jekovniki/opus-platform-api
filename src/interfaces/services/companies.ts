@@ -1,3 +1,5 @@
+import { IFundInstrumentInput } from "./funds";
+
 export interface IFullManagementCompanyData {
     id: string,
     uic: string,
@@ -7,5 +9,6 @@ export interface IFullManagementCompanyData {
     website: string,
     phone: string,
     ceo: string,
-    createdAt: number
+    createdAt: number,
+    instruments?: IFundInstrumentInput[]
 }
