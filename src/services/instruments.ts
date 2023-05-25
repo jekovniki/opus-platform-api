@@ -1,6 +1,7 @@
 import { addMarketInstruments, getAllMarketInstruments, getMarketInstrumentsByCode } from "../dal/instruments";
 import { IBaseResponse } from "../interfaces/base";
 import { IFullMarketInstrumentData } from "../interfaces/services/bse";
+import { IFundInstrumentInput } from "../interfaces/services/funds";
 import { cache } from "../libs/cache";
 import { MARKET_INSTRUMENTS_CACHE_KEY } from "../utils/configuration";
 import { ERRORS } from "../utils/constants/status-codes";
@@ -112,4 +113,32 @@ export async function getSectorSharesForInstrument(code: string, amount: number)
     } catch (error) {
         return handleErrors(error);
     }
+}
+
+export async function getFullDataForCompanyInstruments(companyInstruments: IFundInstrumentInput[]): Promise<Record<string, any>> {
+    return Promise.all(companyInstruments?.map(async (instrument) => {
+        const instrumentData = await getMarketInstruments(instrument.code);
+
+        if ('success' in instrumentData) {
+            return {
+                ...instrument,
+                success: instrumentData.success,
+                message: instrumentData.message
+            }
+        }
+
+        if (Array.isArray(instrumentData)) {
+            return {
+                ...instrument,
+                ...instrumentData[0],
+                totalAmount: Number(instrumentData[0].previousClose) * instrument.amount
+            }
+        }
+        
+        return {
+            ...instrument,
+            ...instrumentData,
+            totalAmount: Number(instrumentData.previousClose) * instrument.amount
+        }
+    }));
 }

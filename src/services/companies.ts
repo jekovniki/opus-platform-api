@@ -4,10 +4,11 @@ import { USER_BEHAVIOR_ERRORS } from "../utils/constants/user";
 import { handleErrors } from "../utils/errors";
 import * as DAL from '../dal/companies';
 import { SUCCESS_REGISTRATION_COMPANY } from "../utils/constants/success";
-import { generateUUIDv4, isValueInObject } from "../utils/helpers";
+import { generateUUIDv4 } from "../utils/helpers";
 import { IBaseResponse } from "../interfaces/base";
 import { checkIfEmployeeExistsById } from "../dal/employee";
-import { FUND_TYPES } from "../utils/constants/funds";
+import { IFullManagementCompanyData } from "../interfaces/services/companies";
+import { getFullDataForCompanyInstruments } from "./instruments";
 
 
 export async function addManagementCompany(companyDetails:TManagementCompany): Promise<IBaseResponse> {
@@ -37,9 +38,19 @@ export async function addManagementCompany(companyDetails:TManagementCompany): P
     }
 }
 
-export async function getManagementCompanyById(id: string) {
+export async function getManagementCompanyById(id: string): Promise<IFullManagementCompanyData | IBaseResponse> {
     try {
         return DAL.getCompanyById(id);
+    } catch(error) {
+        return handleErrors(error);
+    }
+}
+
+export async function getSharesByCompanyId(id: string) {
+    try {
+        const { instruments } = await DAL.getCompanyById(id);
+
+        return instruments ? getFullDataForCompanyInstruments(instruments) : {};
     } catch(error) {
         return handleErrors(error);
     }
