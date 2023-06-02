@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../../libs/logger";
-import { SERVER } from "../../utils/constants/status-codes";
+import { logger } from "../libs/logger";
+import { SERVER } from "../utils/constants/status-codes";
 
 export const loggingMiddleware = (request: Request, response: Response, next: NextFunction): void => {
     try {
