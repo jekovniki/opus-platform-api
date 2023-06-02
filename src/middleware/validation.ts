@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { NextFunction, Request, Response } from "express";
-import { ERRORS } from "../../utils/constants/status-codes";
+import { ERRORS } from "../utils/constants/status-codes";
 
 export const validationMiddleware = (schema: z.AnyZodObject | z.ZodOptional<z.AnyZodObject>) => 
     async (request: Request, response: Response, next: NextFunction) => {

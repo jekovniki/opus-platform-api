@@ -5,7 +5,7 @@ import cors from "cors";
 
 import { IRestServer, IServerConfiguration } from "../interfaces/libs/server";
 import { SERVER } from "../utils/configuration";
-import { setRoutes } from "../routes";
+import router from "../routes";
 import { logger } from "./logger";
 
 class Server implements IRestServer {
@@ -24,7 +24,6 @@ class Server implements IRestServer {
             logger.info(`Server is listening on: ${this.host}:${this.port}`);
         });
         this.middleware();
-        this.setRoutes();
     }
 
     public getServer(): Express {
@@ -41,11 +40,8 @@ class Server implements IRestServer {
         this.server.use(cors({
             origin: SERVER.ORIGIN(),
             credentials: true
-        }))
-    }
-
-    private setRoutes(): void {
-        setRoutes(this.server);
+        }));
+        this.server.use(router);
     }
 }
 

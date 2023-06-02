@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { ERRORS } from '../../utils/constants/status-codes';
-import IdentityToken from '../../libs/token';
+import { ERRORS } from '../utils/constants/status-codes';
+import IdentityToken from '../libs/token';
 import { crmMiddleware } from './crm';
 
 
