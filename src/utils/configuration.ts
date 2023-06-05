@@ -80,6 +80,8 @@ export const LISTED_INSTRUMENT_TYPES = {
 
 export const MARKET_INSTRUMENTS_CACHE_KEY = 'market-instruments';
 
+export const EXCHANGE_RATE_KEY = 'exchange-rate';
+
 export const CRM_TOKEN = validateEnvironmentVariable(process.env.CRM_PROJECT_TOKEN);
 
 export const ENTITY_TYPES = {
