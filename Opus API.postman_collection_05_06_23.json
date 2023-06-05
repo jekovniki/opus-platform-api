@@ -56,8 +56,17 @@
 				{
 					"name": "Login Internal",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"manual-user@yopmail.com\",\n    \"password\": \"Aa123456!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:3001/api/v1/auth/internal/login",
 							"protocol": "http",
@@ -132,7 +141,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"uic\": \"1234571\",\n    \"admin\": \"manual-user@yopmail.com\",\n    \"name\": \"Test Asset Management\",\n    \"type\": \"Акционерно дружество\",\n    \"website\": \"www.efam.bg\",\n    \"phone\": \"087722222\",\n    \"ceo\": \"Иван Йорданов\"\n}",
+							"raw": "{\n    \"uic\": \"9232455\",\n    \"employeeId\": \"867def9e-65bb-4e93-9cd1-95534eb1170f\",\n    \"name\": \"Test Asset Management\",\n    \"type\": \"Акционерно дружество\",\n    \"website\": \"www.efam.bg\",\n    \"phone\": \"087722222\",\n    \"ceo\": \"Иван Йорданов\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,7 +203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"managementCompanyId\": \"9fe314fd-c5dc-40fd-bf34-56d665073c1f\",\n    \"employeeId\": \"a3a6f449-623e-43e1-9586-383658b7651c\",\n    \"uic\": \"9999999939\",\n    \"type\": \"договорен фонд\",\n    \"name\": \"EF test\"\n}",
+							"raw": "{\n    \"managementCompanyId\": \"8e010cce-87c4-4615-b40f-4bf706cb5e55\",\n    \"employeeId\": \"867def9e-65bb-4e93-9cd1-95534eb1170f\",\n    \"uic\": \"9999999949\",\n    \"type\": \"договорен фонд\",\n    \"name\": \"EF test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -266,7 +275,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fundId\": \"eda49026-59c7-4b6b-87bd-2a0af51689fb\",\n    \"instruments\": [{\n        \"code\": \"A4L\",\n        \"amount\": 10\n    }, {\n        \"code\": \"AGH\",\n        \"amount\": 30\n    }, {\n        \"code\": \"0DC1\",\n        \"amount\": 90\n    }]\n}",
+							"raw": "{\n    \"fundId\": \"33a5cc96-4569-4a75-985c-fdbd6b63ca72\",\n    \"instruments\": [{\n        \"code\": \"A4L\",\n        \"amount\": 10\n    }, {\n        \"code\": \"AGH\",\n        \"amount\": 30\n    }, {\n        \"code\": \"0DC1\",\n        \"amount\": 90\n    }]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,6 +309,15 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"manual-user@yopmail.com\",\n    \"status\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:3001/api/v1/employee/status",
 							"protocol": "http",
@@ -399,6 +417,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Instruments per entities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/shares?id=8e010cce-87c4-4615-b40f-4bf706cb5e55&type=COMPANY",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"shares"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8e010cce-87c4-4615-b40f-4bf706cb5e55"
+								},
+								{
+									"key": "type",
+									"value": "COMPANY"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -469,6 +518,58 @@
 								"api",
 								"v1",
 								"obligation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exchange rates",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/exchange",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"exchange"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PEP",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/pep",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"pep"
 							]
 						}
 					},
