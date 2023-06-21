@@ -30,7 +30,12 @@ class Cache implements ICacheService {
         })
     }
 
-    public async set(key: RedisKey, value: string | number | Buffer): Promise<string | undefined> {
+    public async set(key: RedisKey, value: string | number | Buffer, isExpiration:boolean = false, expirationInSeconds: number | undefined = undefined ): Promise<string | undefined> {
+        if(isExpiration) {
+            const expirationTime = expirationInSeconds ?? 43200; // 43200 is 1 day;
+            return this.client.set(key, value, 'EX', expirationTime);
+        }
+        
         return this.client.set(key, value);
     }
 
