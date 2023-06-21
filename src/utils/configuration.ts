@@ -65,6 +65,8 @@ export function SET_APPLICATION_PATH() {
     return `https://${CLIENT_APP.HOST}:${CLIENT_APP.PORT}`
 }
 
+export const PEP_SOURCE_URL = validateEnvironmentVariable(process.env.PEP_SOURCE_URL);
+
 export const LISTED_INSTRUMENT_TYPES = {
     PREMIUM: 'Premium_Equities_Segment',
     STANDARD: 'Standard_Equities_Segment',
@@ -82,6 +84,8 @@ export const MARKET_INSTRUMENTS_CACHE_KEY = 'market-instruments';
 
 export const EXCHANGE_RATE_KEY = 'exchange-rate';
 
+export const PEP_LIST_KEY = 'pep_list';
+
 export const CRM_TOKEN = validateEnvironmentVariable(process.env.CRM_PROJECT_TOKEN);
 
 export const ENTITY_TYPES = {
@@ -89,3 +93,16 @@ export const ENTITY_TYPES = {
     FUND: 'FUND',
     COMPANY: 'COMPANY'
 }
+
+export const PEP_DATA_PER_YEAR = [
+    "/2013y/list.xml",
+    "/2014y/list.xml",
+    "/2015y/list.xml",
+    "/2016y/list.xml",
+    "/2017y/list.xml",
+    "/2018y/list.xml",
+    "/2019y/list.xml",
+    "/2020y/list.xml",
+    "/2021y/list.xml",
+    "/2022y/list.xml"
+]
